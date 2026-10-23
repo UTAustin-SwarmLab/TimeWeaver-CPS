@@ -1,0 +1,134 @@
+experiment: "diffusion" # other values are gan and metrics
+ 
+use_guidance: False
+perform_cop_after_guidance: False
+guidance_weight: 0.00001
+use_fixed_value_projection: True
+
+use_diffts: False
+instance_weight: 0.00001
+  
+use_projection: False
+project_during_synthesis: False
+use_strict_projection: False  
+use_prodigy: False
+init_weight: 0
+p_value: 5 
+use_penalty_based_projection: False
+num_projection_steps: 1
+num_denoising_steps: 200
+gamma_choice: "exp" 
+compare_with_pdm: False
+
+project_after_synthesis: False 
+use_discriminator: True 
+in_projection_objective: True
+in_refinement_objective: False
+use_real_seed: False
+
+discriminator_params: 
+  use_gan_scaling: False
+  discriminator_name: "wavegan_v1"
+  discriminator_wrapper_model_file: timeseries_gan
+  discriminator_wrapper_model_name: TimeSeriesGANModelTrainer
+  discriminator_wrapper_checkpoint_path: ''
+  num_refinement_steps: 8 
+  discriminator_weight: 0.1
+ 
+defaults: 
+  - override hydra/launcher: joblib 
+hydra:
+  launcher:
+    n_jobs: 2   
+
+seed: 42
+device: "cuda"
+num_workers: 8 
+  
+dataset_name: "air_quality" 
+dataloader_file: general_pl_dataloader  
+dataloader_model: TimeweaverDataLoader
+
+synthesizer_name: "csdi_timeseries_denoiser_v4" 
+synthesizer_wrapper_model_file: timeseries_diffusion 
+synthesizer_wrapper_model_name: TimeSeriesDiffusionModelTrainer
+
+synthesizer_wrapper_checkpoint_path: ''
+should_compile_torch: False 
+
+denoiser_name: ${synthesizer_name} # or sss_timeseries_denoiser_v2
+gan_name: ${synthesizer_name}
+
+######################### GENERAL DATASET CONFIG ########################################
+dataset: 
+  train_test_split: 0.8   
+  batch_size: 512
+  num_workers: 8 
+ 
+ 
+
+######################## SPECIFIC DATASET CONFIG ########################################dq 
+
+air_quality_dataset: 
+  num_channels: 6 
+  time_series_length: 96
+  required_time_series_length: 64
+  log_dir: ''
+  num_discrete_labels: 101 
+  num_discrete_conditions: 6
+  num_continuous_labels: 5 
+  discrete_condition_embedding_dim: 128
+  equality_constraints_to_extract: ['argmax',]
+
+########################### TIME SERIES DENOISER CONFIG ########################################
+
+training:
+    schedule: 'linear' # 'cosine'
+
+csdi_timeseries_denoiser_v4_config:
+    positional_embedding_dim: 128
+    channel_embedding_dim: 16
+    channels: 256
+    n_heads: 16
+    n_layers: 10
+    dropout_pos_enc: 0.2  
+    use_metadata: False
+
+    metadata_encoder_config:
+        use_sa_layer: True
+        channels: ${csdi_timeseries_denoiser_v4_config.channels}
+        n_heads: 8
+        num_encoder_layers: 2
+        dropout: 0.1
+
+########################### TIME SERIES GAN CONFIG ########################################
+wavegan_v1_config:
+  use_metadata: False 
+  
+  generator_config:
+    kernel_size: 3 
+    latent_dim: 48 
+    repeat_num: 2
+    stride: 2
+    blow_up_factor: 5 # 10 for traffic and 2 for air quality
+    final_activation: None
+    metadata_encoder_config:
+        channels: 64
+        n_heads: 8
+        num_encoder_layers: 2
+        use_sa_layer: True
+        dropout: 0.1
+  
+  discriminator_config:
+    model_size: 40
+    kernel_size: 5
+    stride_list: [2, 1, 2, 1, 2, 1]
+    alpha: 0.2
+    shift_factor: 2
+    output_condition: False
+    metadata_encoder_config:
+        channels: 64
+        n_heads: 8
+        num_encoder_layers: 2
+        use_sa_layer: True
+        dropout: 0.1

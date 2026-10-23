@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.venv/
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/
+
+# Downloaded data and checkpoints (repo root)
+/data/
+/logs/
+*.ckpt
+*.pth
+
+# Training and generation outputs
+runs/
+mlflow/
+outputs/
+multirun/
+lightning_logs/
+Time_Series_*_Training/
+
+# TSTR outputs (evaluation/Time-Series-Library)
+evaluation/Time-Series-Library/checkpoints/
+evaluation/Time-Series-Library/results/
+evaluation/Time-Series-Library/test_results/
+evaluation/Time-Series-Library/result_imputation.txt

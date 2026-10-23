@@ -1,0 +1,70 @@
+[tool.poetry]
+name = "timeweaver-cps"
+version = "0.1.0"
+description = "Time Weaver (ICML 2024) and Constrained Posterior Sampling (NeurIPS 2025): conditional and constrained time series generation"
+readme = "README.md"
+authors = [
+    "Sai Shankar Narasimhan <nsaishankar@utexas.edu>",
+    "Shubhankar Agarwal <somi.agarwal@utexas.edu>",
+    "Oguzhan Akcin",
+    "Litu Rout <litu.rout@utexas.edu>",
+    "Sujay Sanghavi",
+    "Sanjay Shakkottai <sanjay.shakkottai@utexas.edu>",
+    "Sandeep Chinchali <sandeepc@utexas.edu>",
+]
+
+packages = [{include = "timeseries_synthesis"}]
+
+[tool.poetry.dependencies]
+python = "3.9.12"
+numpy = "*"
+matplotlib = "*"
+seaborn = "*"
+pandas = "*"
+argparse = "*"
+easydict = "*"
+flake8 = "*"
+black = "*"
+laion-clap = "*"
+scikit-learn = "*"
+pinecone-client = "*"
+hydra-core = "*"
+hydra-joblib-launcher = "*"
+protobuf = "3.20.*"
+torch = "2.0.0"
+torchvision = "*"
+torchaudio = "*"
+numba = "0.55.2"
+tsfresh= "*"
+ipython = "^8.15.0"
+scipy = "^1.11.2"
+statsmodels = "^0.14.0"
+# pyts = "^0.13.0"
+lightning = "*"
+pyts = "*"
+einops = "*"
+opt-einsum = "*"
+mega = "*"
+mega-py = "^1.0.8"
+tabulate = "*"
+mlflow = "^2.7.1"
+fastai = "1.0.61"
+umap = "^0.1.1"
+umap-learn = "^0.5.5"
+gluonts = {extras = ["torch"], version = "^0.14.4"}
+cvxpy = "^1.5.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+black = { version = "*", allow-prereleases = true }
+pytest-cov = "*"
+
+# poetry run pip install torch==2.0.0+cu118 torchvision==0.12.0+cu113 -f https://download.pytorch.org/whl/cu118/torch_stable.html
+# poetry run pip install torch==2.0.1+cu118 -f https://download.pytorch.org/whl/cu118/torch_stable.html
+# poetry run pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_releases.html
+# sudo apt install python3.9-dev libglew-dev patchelf
+# sudo apt-get install cmake libopenmpi-dev python3-dev zlib1g-dev
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

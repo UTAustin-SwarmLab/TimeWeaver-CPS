@@ -1,0 +1,113 @@
+experiment: 'diffusion'
+
+use_conditions: False
+seed: 42
+device: "cuda" 
+num_workers: 8 
+
+dataset_name: "air_quality" 
+dataloader_file: general_pl_dataloader 
+dataloader_model: TimeweaverDataLoader
+
+similarity_checker_wrapper_model_file: cltsp
+similarity_checker_wrapper_model_name: CLTSPTrainer
+similarity_checker_name: "cltsp_v3"   
+ 
+cltsp_name: ${similarity_checker_name}  
+similarity_checker_wrapper_checkpoint_path: '' 
+synthetic_dataset_dir: ''
+
+use_guidance: False
+perform_cop_after_guidance: False
+guidance_weight: 0.00001
+use_fixed_value_projection: True
+
+use_diffts: False
+instance_weight: 0.00001
+  
+use_projection: False
+project_during_synthesis: False
+use_strict_projection: False 
+use_prodigy: False
+init_weight: 0
+p_value: 5
+# worked well
+use_penalty_based_projection: False
+num_projection_steps: 1
+num_denoising_steps: 200
+gamma_choice: "exp"
+
+project_after_synthesis: False
+use_discriminator: True 
+in_projection_objective: True
+in_refinement_objective: False
+use_real_seed: False
+
+discriminator_params: 
+  num_refinement_steps: 8 
+  discriminator_weight: 0.1
+
+######################### GENERAL DATASET CONFIG ########################################
+dataset: 
+  train_test_split: 0.8 
+  batch_size: 1024
+  num_workers: 8
+
+
+######################## SPECIFIC DATASET CONFIG ########################################
+  
+air_quality_dataset: 
+  num_channels: 6 
+  time_series_length: 96
+  required_time_series_length: 64
+  log_dir: ''
+  num_discrete_labels: 101 
+  num_discrete_conditions: 6
+  num_continuous_labels: 5 
+  discrete_condition_embedding_dim: 128
+  latent_dim: 128
+  skip: 1
+  # equality_constraints_to_extract: ['argmax']
+  # equality_constraints_to_extract: ['argmax', 'max and argmax', 'argmin']
+  # equality_constraints_to_extract: ['argmax', 'max and argmax', 'argmin', 'min and argmin', 'mean']
+  # equality_constraints_to_extract: ['argmax', 'max and argmax', 'argmin', 'min and argmin', 'mean', 'mean change', 'val_at_1']
+  # equality_constraints_to_extract: ['argmax', 'max and argmax', 'argmin', 'min and argmin', 'mean', 'mean change', 'val_at_1', 'val_at_24', 'val_at_48']
+  equality_constraints_to_extract: ['argmax', 'max and argmax', 'argmin', 'min and argmin', 'mean', 'mean change', 'val_at_1', 'val_at_24', 'val_at_48', 'val_at_72', 'val_at_96']
+
+########################### TRAINING CONFIG ########################################
+
+training:
+    max_epochs: 5000
+    learning_rate: 1e-4
+    n_plots: 4
+    save_after_every_iters: 100
+    save_after_every_n_epochs: 50
+    auto_lr_find: True
+    check_val_every_n_epoch: 10
+    log_every_n_steps: 1
+    num_devices: 1 # ONLY SUPPORTS 1 DEVICE FOR NOW.
+    # strategy: "ddp_find_unused_parameters_true"
+    strategy: "auto"
+
+########################### CLTSP CONFIGS ########################################
+
+cltsp_v3_config:  
+    d_model: 128
+    d_keys: 8
+    d_values: 8
+    n_heads: 8
+    num_encoder_layers: 8
+    num_compression_layers: 1
+    d_ff: 2048
+    dropout: 0.05
+    activation: "gelu"
+    num_positive_samples: 2
+    discrete_condition_embedding_dim: 128
+
+supervised_contrastive_learning:
+    temperature: 0.07 
+    base_temperature: 0.07
+    contrast_mode: "all"
+
+run_name: "${denoiser_name}_${dataset_name}"
+
