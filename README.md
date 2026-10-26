@@ -222,7 +222,7 @@ latency, non-convex constraints, and the choice of penalty coefficients.
     month = {12},
     address = {San Diego, USA},
     url={https://openreview.net/forum?id=iBLAYaEKdL},
-    doi={10.48550/arXiv.2410.12652}
+    doi={10.52202/085713-3599}
 }
 ```
 
